@@ -1,0 +1,258 @@
+Horas invertidas:
+
+Sabado 19: 3 horas
+
+---------------------------------------
+Template: getter/setter
+---------------------------------------
+
+VAR1: Nombre de la variable getter/setter en minuscula
+VAR2: Nombre de la variable getter/setter en mayuscula
+
+	function setVAR2($VAR1)
+	{
+		$this->VAR1 = $VAR1;
+	}
+	
+	function getVAR2()
+	{
+		return $this->VAR1;
+	}
+
+---------------------------------------
+Template: mapper
+---------------------------------------
+
+CLASS_NAME: Nombre de la clase
+
+<?php
+
+require_once 'icfDatabase.php';
+require_once "classes/.php";
+
+/**
+ * Class that implements the mapper design pattern for the CLASS_NAME class
+ *
+ * @author despada 2005-04-XX
+ */
+class CLASS_NAMEMapper
+{
+	var $icfDatabase;
+	
+	/**
+	 * Constructs the mapper
+	 */
+	function& CLASS_NAMEMapper()
+	{
+		$this->icfDatabase = new IcfDatabase();
+	}
+	
+	/**
+	 * Gets a CLASS_NAME object
+	 *
+	 * @param id the CLASS_NAME Id
+	 * @return the CLASS_NAME object
+	 */
+	function& get($id)
+	{
+		$rs = $this->icfDatabase->dbQuery("SELECT * FROM ##CLASS_NAME WHERE id = " . $id);
+		
+		return mapOne($rs);
+	}
+
+	/**
+	 * Maps all the CLASS_NAMEs objects contained in a recordset to an object representation
+	 *
+	 * @param $rs Recordset filled with the object data
+	 * @return objeto Mapped CLASS_NAME object
+	 */	
+	function& mapAll($rs)
+	{
+		if ($rs == null)
+			return null;	
+			
+		$array = array();		
+		$rs->moveFirst();
+		while ($rs->EOF == false)
+		{
+			$object = $this->mapOne($rs);
+			array_push($array, $object);
+			
+			$rs->moveNext();
+		}
+		
+		return $array;		
+	}
+
+	/**
+	 * Maps a CLASS_NAME object contained in a recordset to an object representation
+	 *
+	 * @param $rs Recordset filled with the object data
+	 * @return objeto Mapped CLASS_NAME object
+	 */	
+	function& mapOne($rs)
+	{
+		if ($rs == null)
+			return null;
+		
+		$object = new CLASS_NAME();
+		$object->setId($rs->fields["ID"]);
+		
+		return $object;
+	}
+}
+
+?>
+
+---------------------------------------
+Template: entity class
+---------------------------------------
+
+<?php
+
+/**
+ * CLASS_COMMENT
+ *
+ * @author despada DATE
+ */
+class CLASS_NAME
+{
+	var $id;
+	
+	function setId($id)
+	{
+		$this->id = $id;
+	}
+	
+	function getId()
+	{
+		return $this->id;
+	}	
+}
+
+?>
+
+---------------------------------------
+Requerimientos
+---------------------------------------
+
+1) Programar pantalla de login (ya está diseñada: login.php)
+
+2) Programar pantalla de inicio (ya esta diseñada: home.php, es la que
+muestra el menu principal, la barra de herramientas y link as las
+tareas mas frecuentes).  El menu se arma en forma dinamica en base a
+los permisos que tenga el usuario.  Lo mismo ocurre con los links a
+las tareas frecuentes
+Esto esta descripto en punto 5.1. del doc
+
+	Los links van a:
+	a) 5 pending contents: va a pending.php
+	b) Cada link debajo de Add: va a edit.php (pasando como parametro la clase)
+	c) Upload: ambos links van a media.php (dentro de la estructura del
+	sitio habra dos carpetas especiales: media y images.  La carpeta
+	images tendra todas las imagenes cargadas por el usuario
+	(posibilemente con subcarpetas).  La carpeta media tendra todo el
+	resto de archivos cargados por el usuario)
+
+
+3) Programar pantalla "Autorizar": (ya esta diseñada: pending.php)
+muestra una tabla paginada, y sortable, con los objetos que tengan
+isPublished en 0 para los que el usuario tenga permiso.  El orden
+inicial es por fecha de creacion desc.  Permite seleccionar N objetos
+y hacer click en un boton Publish, para publicarlos (es decir, poner
+isPublished en 1)
+
+4) Programar pantalla "Listar objetos de una clase": list.php - dada
+una clase, lista todos los objetos de esa clase en una tabla paginada,
+sortable.  El orden inicial es por fecha de creacion desc.
+La pagina tendrá un combo con todas las clases a las que tiene permiso
+el usuario, al seleccionar un item del combo, mostrara la lista de
+objetos de esa clase.
+Ademas, permitira realizar busquedas, por titulo, y fulltext.
+
+5) Programar pantalla "editar (alta /modificacion) objeto de una
+clase": edit.php - si el usuario tiene permiso para editar objetos de
+esa clase, mostrará un formulario que le permitira cargar los datos
+para el objeto. El form se crea en forma dinamica en base a la
+definicion de clase, y los datatypes de cada atributo de la clase  que
+se toman de la base de datos.
+El usuario podrá elegir en qué folders del sitio ubicará al objeto.
+Podra espeficar ademas de los atributos de la clase, los datos que
+corresponden a la tabla icfObjects
+Los tipos de datos a programar se encuentran detallados en el punto 2.10 del doc
+
+	edit.php: no recordaba que habia sido un lio en el portal base mezclar
+	edit y add.
+	Asi que esta bien que separemos edit.php y add.php
+	Las 29 hs que me pasaste las pasaste pensando en hacer tanto la
+	funcionalidad de edit y add en una sola pagina o solo en hacer edit?
+
+6) Programar pantalla "eliminar objeto": delete.php - si el usuario
+tiene permiso, dado un id de objeto, mostrará sus datos y permitira
+eliminarlo
+
+7) Programar pantalla "archivos": media.php - es la pantalla que
+permite realizar el mantenimiento de archivos de la galeria de media.
+La galeria de media será una carpeta standard (icfFolder).  Dentro de
+esa carpeta,  puede haber n carpetas con univel n de anidamiento.
+Esto permite organizar toda la galeria de media del sitio.
+Si tiene permiso, el usuario podra navegar la esrtuctura de
+directorios de la galeria para ver y seleccionar un archivo.
+Adcionalmente, podrá eliminar un archivo existente, y hacer upload de
+un archivo nuevo a la galeria.
+Para una segunda etapa si no alcanza el tiempo: Tambien podrá
+agregar/editar o eliminar carpetas.
+
+	media.php: Los archivos son icfObjects de tipo Archivo, que se ubican
+	en un icfFolder especial que es el folder de media.  Pero esto es la
+	"metadata", el archivo fisicamente se almacena en el disco.
+	No tenes prototipo de esta, pero lo voy a hacer.
+	5 horas es muy poco. Calcula 2/3 del tiempo que te lleve hacer el add.php
+
+8) Programar pantalla "carpetas": site.php - es la pantalla que
+permite navegar la estructura de folders del sitio: muestra solo los
+folders para los que el usuario tiene permiso.
+Al seleccionar una carpeta, mostrará todo el contenido de esa carpeta.
+ PErmitirá agregar/editar/eliminar objetos dentro de la carpeta.  Al
+agregar objetos, solo permtiira agregar los objetos de las clases para
+los que el usuario tenga permiso, y que se puedan poner dentro de esa
+carpeta.
+
+	site.php: Esta es una pagina en que se muestra los directorios
+	(icfFolders), al hacer click en un directorio, se meustra el contenido
+	del directorio en la misma pagina.  No solo permite visualizar, sino
+	abm de folder y objetos contenidos en los folders
+	No tenes prototipo de esta, pero lo voy a hacer.
+	6 horas es muy poco. Calcula 2/3 del tiempo que te lleve hacer el add.php
+
+9) Crear una API que permita hacer consultas desde el frontend.
+Ejemplo: dado una carpeta y clase, devolver todos los objetos de esa
+clase ubicados en esa carpeta.
+La API debe brindar funcionalidad para que sea usada por el buscador del sitio.
+Creo que esta API debiera estar en una clase que sera la que use el
+backend para hacer todas sus queries.  De ser asi, poniendo eso a
+disposicion del frontend, no habria demasiado que agregar (creo que lo
+unico que habria que agrear es el tema de busquedas fultext y por
+atributos de clase)
+
+Caracteristicas generales: toda la GUI (como tambien el contenido), es
+multilingue.  La GU debe estar disponible en ingles y español
+Ver punto 3. del doc, para ver cuestiones de tecnologia
+
+---------------------------------------
+Planificacion de tiempos:
+---------------------------------------
+
+login.php: 2 + 1 + 1/2 : 3 1/2					(FIN: 5 horas)
+home.php: 6 + 5 + 2: 13									(COMENZANDO: Domingo 20 19:00 hs)
+pending.php: 3 + 3 + 1/2: 6 1/2
+list.php: 4 + 3 + 1/2 = 7 1/2
+edit.php: 24 + 4 + 1 = 29
+delete.php 4 + 2 + 1/2 = 6 1/2
+media.php: 20
+site.php: 20
+API Query Object: 16 horas
+
+TOTAL: 122 horas
+a 16 horas por semana
+TOTAL semanas: 7.625 semanas (casi dos meses)
