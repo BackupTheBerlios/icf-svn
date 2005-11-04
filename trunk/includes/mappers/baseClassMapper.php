@@ -77,6 +77,10 @@ class BaseClassMapper
 		
 		$classQuery->setCriterion($criteriaGroup);
 		
+		// sorting
+		$order = new Order($classQuery, "title", "ASC");
+		$classQuery->addOrder($order);
+
 		// Execute the query
 		$recordset =& $classQuery->execute();
 		$array = $this->mapAll($recordset);
