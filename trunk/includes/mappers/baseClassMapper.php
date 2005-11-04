@@ -43,6 +43,11 @@ class BaseClassMapper
 	function& getAll()
 	{
 		$query = new Query("Class");
+
+		// sorting
+		$order = new Order($query, "title", "ASC");
+		$query->addOrder($order);
+
 		$rs = $query->execute();
 		return $this->mapAll($rs);
 	}
