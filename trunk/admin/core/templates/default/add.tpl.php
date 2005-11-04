@@ -144,7 +144,7 @@
 					
 					<? foreach ($this->frontLanguageArray as $language) { ?>
 					<tr>
-						<td><img src="<?php echo $this->templatePath?>/images/flags/<?php echo strtolower($language[0]->getTitle())?>.gif"></td>
+						<td><img src="<?php echo $this->templatePath?>/images/flags/<?php echo strtolower($language[0]->getCode())?>.gif"></td>
 						<td colspan="2" width="100%"><b><?php echo $this->text["language"]?> <?php echo $language[0]->getTitle()?></b></td>
 					</tr>
 					
