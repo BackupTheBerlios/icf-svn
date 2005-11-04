@@ -229,7 +229,7 @@ class BaseClass
 		if (is_null($this->objects))
 		{
 			$objectMapper = new ObjectMapper();
-			$this->objects = $objectMapper->findByClassId($this->getId());
+			$this->objects = $objectMapper->findByClassId($this->getId(), true);
 		}
 		
 		return $this->objects;

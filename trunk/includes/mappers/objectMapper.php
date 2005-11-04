@@ -119,14 +119,36 @@ class ObjectMapper extends Mapper
 	 * @param $classId int - Class id
 	 * @return Array - List of Classes
 	 */
-	function& findByClassId($classId)
+	function& findByClassId($classId, $sortByTitle = false)
 	{
 		$query = $this->newQueryObject();
 		
 		$criteria =& new Criteria($query, "classID", $classId);
 		$query->setCriterion($criteria);
 		
-		return $this->mapAll($query->execute());
+		$rv = $this->mapAll($query->execute());
+
+		if ($sortByTitle)
+		{
+			uasort($rv, "Title_Sort");
+		}
+		
+		return $rv;
+	}
+
+	function Title_Sort($val_1, $val_2)
+	{
+	  // initialize the return value to zero
+	  $retVal = 0;
+
+	  // get the title value 
+	  $firstVal = $val_1->getTitle();
+	  $secondVal = $val_2->getTitle();
+
+	  $retVal = strnatcasecmp ($firstVal, $secondVal);
+
+		echo $firstVal  . " , " . $secondVal . $retVal;
+	  return $retVal;
 	}
 
 	/**
