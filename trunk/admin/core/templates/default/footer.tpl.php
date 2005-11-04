@@ -3,7 +3,7 @@
 				<tr>
 					<td align="center">
 						<div align="center"><?php echo $this->text["copyright"]?></div>
-						<div align="center"><a href="http://sf.net/icf"><?php echo $this->text["icf"]?></a> <?php echo $this->text["license"]?></div>
+						<div align="center"><a href="http://developer.berlios.de/projects/icf/"><?php echo $this->text["icf"]?></a> <?php echo $this->text["license"]?></div>
 					</td>
 				</tr>
 			</tbody>
