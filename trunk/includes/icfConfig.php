@@ -58,30 +58,30 @@ class IcfConfig
 	 */
 	function IcfConfig()
 	{			
-		$this->cfg_db_connectionString = 'mysqlt://arielcar:fk185@localhost/icfKairos';
+		$this->cfg_db_connectionString = 'mysqlt://root:@localhost/icfKairos';
 		$this->cfg_db_debug = false;
 		$this->cfg_db_tableprefix = 'icf';
 				
-		$this->cfg_site_feBaseUrl = 'http://www.kairos.org.ar/icf';
-		$this->cfg_site_beBaseUrl = 'http://www.kairos.org.ar/icf/admin';
-		$this->cfg_site_beTemplateUrl = 'http://www.kairos.org.ar/icf/admin/core/templates/default';
+		$this->cfg_site_feBaseUrl = 'http://localhost/icf';
+		$this->cfg_site_beBaseUrl = 'http://localhost/icf/admin';
+		$this->cfg_site_beTemplateUrl = 'http://localhost/icf/admin/core/templates/default';
 
-		$this->cfg_site_feBasePath = '/home/httpd/vhosts/kairos.org.ar/httpdocs/icf';
-		$this->cfg_site_beBasePath = '/home/httpd/vhosts/kairos.org.ar/httpdocs/icf/admin';
+		$this->cfg_site_feBasePath = 'C:\AppServ\www\icf';
+		$this->cfg_site_beBasePath = 'C:\AppServ\www\icf\admin';
 
-		$this->cfg_site_imagePathFs = $this->cfg_site_feBasePath . '/images';
-		$this->cfg_site_imagePathUrl = $this->cfg_site_feBaseUrl . '/images';
+		$this->cfg_site_imagePathFs = $this->cfg_site_feBasePath . '\images';
+		$this->cfg_site_imagePathUrl = $this->cfg_site_feBaseUrl . '\images';
 		$this->cfg_image_folder_id = "26";
 		$this->cfg_image_class_id = "11";
 		$this->cfg_image_extensions = array("ico", "gif", "jpg", "jpeg");
 		
-		$this->cfg_site_mediaPathFs = $this->cfg_site_feBasePath . '/media';
-		$this->cfg_site_mediaPathUrl = $this->cfg_site_feBaseUrl . '/media';
+		$this->cfg_site_mediaPathFs = $this->cfg_site_feBasePath . '\media';
+		$this->cfg_site_mediaPathUrl = $this->cfg_site_feBaseUrl . '\media';
 		$this->cfg_media_folder_id = "27";
 		$this->cfg_media_class_id = "12";
 		$this->cfg_media_extensions = array("mp3", "mp2", "mid", "doc");
 		
-		$this->cfg_site_beTemplatePath = $this->cfg_site_beBasePath . '/core/templates/default';
+		$this->cfg_site_beTemplatePath = $this->cfg_site_beBasePath . '\core\templates\default';
 		
 		$this->cfg_locale_active = 'es-AR';
 		$this->cfg_date_format_class = "StandardDateFormat";
