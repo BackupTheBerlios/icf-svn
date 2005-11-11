@@ -95,6 +95,19 @@ class Folder
 	{
 		return $this->position;
 	}
+
+	function getPathway()
+	{
+		$pathView = $this->getTitle();
+		$parentFolder = $this->getParent();
+		while ($parentFolder != null)
+		{
+			$pathView = $parentFolder->getTitle() . " / " . $pathView;
+			$parentFolder = $parentFolder->getParent();
+		}
+
+		return $pathView;
+	}
 	
 	/**
 	 * Gets the ObjectFolder objects assigned to this folder

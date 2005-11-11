@@ -33,4 +33,8 @@ $text["yes"] = "yes";
 $text["no"] = "no";
 
 $text["deleteconfirmation"] = "Are you sure you want to delete the selected records ?";
+
+$text["inFolder"] = "In folder";
+$text["(all)"] = "(All)";
+
 ?>

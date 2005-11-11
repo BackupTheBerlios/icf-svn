@@ -3,6 +3,27 @@
 <?php include $this->loadTemplate('toolbar.tpl.php') ?>
 <?php include $this->loadTemplate('startmain.tpl.php') ?>
 
+<script language="javascript" type="text/javascript">
+
+/* Function called to get the folders list */
+function getFolders(){
+
+	var selID = document.form.classIdSelect.options[document.form.classIdSelect.selectedIndex].value;
+
+	icfHTTP.open('get', 'irequest.php?action=get_folders&id=' + selID);
+	icfHTTP.onreadystatechange = handleFolders; 
+	icfHTTP.send(null);
+}
+
+/* Function called to handle the list that was returned from the internal_request.php file.. */
+function handleFolders(){
+
+	if(icfHTTP.readyState == 4){ //Finished loading the response
+		var response = icfHTTP.responseText;
+		document.getElementById('classIdSelect').innerHTML = response;
+	}
+}
+</script>
 
 <div align="right">
 	<form name="form" id="form" method="POST">
@@ -10,9 +31,21 @@
 			<tr>
 				<td>
 					<?php echo $this->text["class"]?>:
-					<select name="classIdSelect" id="classIdSelect" class="inputbox">
+					<select name="classIdSelect" id="classIdSelect" class="inputbox" onChange="getFolders();">
 						<?php foreach ($this->controllerData["classes"] as $class) {?>
 						<option value="<?php echo $class->getId()?>" <?php if ($class->getId() == $this->controllerData["classIdSelect"]) echo "selected" ?>><?php echo $class->getTitle()?></option>
+						<?php }?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<?php echo $this->text["inFolder"]?>:
+					<select name="folderIdSelect" id="folderIdSelect" class="inputbox">
+						<option value="-1" <?php if ($folder->getId() == $this->controllerData["folderIdSelect"]) echo "selected" ?>> <?php echo $this->text["(all)"]?>  </option>
+
+						<?php foreach ($this->controllerData["folders"] as $folder) {?>
+						<option value="<?php echo $folder->getId()?>" <?php if ($folder->getId() == $this->controllerData["folderIdSelect"]) echo "selected" ?>><?php echo $folder->getPathway()?></option>
 						<?php }?>
 					</select>
 				</td>
@@ -45,6 +78,9 @@
 		</table>
 	</form>
 	
+	<!-- Paginable grid patch -->
+	<script src="../../includes/activewidgets/patches/paging1.js"></script>
+
 	<!-- grid format -->
 	<style>
 		.active-controls-grid {height: 100%; font: menu;}
@@ -90,13 +126,19 @@
 		// create ActiveWidgets Grid javascript
 		var grid = new Active.Controls.Grid;
 	
+		//	replace the built-in row model with the new one (defined in the patch)
+		grid.setModel("row", new Active.Rows.Page);
+
 		// set number of rows/columns
-		grid.setRowProperty("count", <?php echo $rows?>);
-		grid.setColumnProperty("count", 5);
+		grid.setProperty("row/count", <?php echo $rows?>);
+		grid.setProperty("column/count", 5);
 	
 		// provide cells and headers text
-		grid.setColumnProperty("text", function(i) { return columns[i] } );
-		grid.setDataProperty("text", function(i, j) { return data[i][j] } );		
+		grid.setProperty("data/text", function(i, j) { return data[i][j] } );
+		grid.setProperty("column/texts", columns);
+
+		//	set page size
+		grid.setProperty("row/pageSize", 15);
 	
 		// set headers width/height
 		grid.setRowHeaderWidth("28px");
@@ -190,10 +232,48 @@
 			<script language="javascript">
 				if (data.length == 0)
 					document.write("<?php echo $this->text["none"]?>");
-				else				
+				else
+				{
 					// write grid html to the page
 					document.write(grid);
+				}
 			</script>
+		</td>
+	</tr>
+	<tr>
+		<td>
+				<!-- bottom page control buttons -->
+				<div>
+					<button onclick='goToPage(-Infinity)'>&lt;&lt;</button>
+					<button onclick='goToPage(-1)'>&lt;</button>
+					<span id='pageLabel'></span>
+					<button onclick='goToPage(1)'>&gt;</button>
+					<button  onclick='goToPage(Infinity)'>&gt;&gt;</button>
+				</div>
+
+
+	<!-- button click handler -->
+	<script>
+
+		function goToPage(delta)
+		{
+			var count = grid.getProperty("row/pageCount");
+			var number = grid.getProperty("row/pageNumber");
+
+			number += delta;
+
+			if (number < 0) number = 0;
+			if (number > count-1) number = count-1;
+			document.getElementById("pageLabel").innerHTML = (number + 1) + " / " + count + " ";
+
+			grid.setProperty("row/pageNumber", number);
+			grid.refresh();
+		}
+
+		// Init in page 0
+		goToPage(-Infinity);
+	</script>
+
 		</td>
 	</tr>
 	

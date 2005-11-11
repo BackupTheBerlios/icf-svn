@@ -3,15 +3,49 @@
 <?php include $this->loadTemplate('toolbar.tpl.php') ?>
 <?php include $this->loadTemplate('startmain.tpl.php') ?>
 
+<script language="javascript" type="text/javascript">
+
+/* Function called to get the folders list */
+function getFolders(){
+
+	var selID = document.form.classIdSelect.options[document.form.classIdSelect.selectedIndex].value;
+
+	icfHTTP.open('get', 'irequest.php?action=get_folders&id=' + selID);
+	icfHTTP.onreadystatechange = handleFolders; 
+	icfHTTP.send(null);
+}
+
+/* Function called to handle the list that was returned from the internal_request.php file.. */
+function handleFolders(){
+
+	if(icfHTTP.readyState == 4){ //Finished loading the response
+		var response = icfHTTP.responseText;
+		document.getElementById('classIdSelect').innerHTML = response;
+	}
+}
+</script>
+
 <div align="right">
 	<form name="form" id="form" method="POST">
 		<table>
 			<tr>
 				<td>
 					<?php echo $this->text["class"]?>:
-					<select name="classIdSelect" id="classIdSelect" class="inputbox">
+					<select name="classIdSelect" id="classIdSelect" class="inputbox" onChange="getFolders();">
 						<?php foreach ($this->controllerData["classes"] as $class) {?>
 						<option value="<?php echo $class->getId()?>" <?php if ($class->getId() == $this->controllerData["classIdSelect"]) echo "selected" ?>><?php echo $class->getTitle()?></option>
+						<?php }?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<?php echo $this->text["inFolder"]?>:
+					<select name="folderIdSelect" id="folderIdSelect" class="inputbox">
+						<option value="-1" <?php if ($folder->getId() == $this->controllerData["folderIdSelect"]) echo "selected" ?>> <?php echo $this->text["(all)"]?>  </option>
+
+						<?php foreach ($this->controllerData["folders"] as $folder) {?>
+						<option value="<?php echo $folder->getId()?>" <?php if ($folder->getId() == $this->controllerData["folderIdSelect"]) echo "selected" ?>><?php echo $folder->getPathway()?></option>
 						<?php }?>
 					</select>
 				</td>

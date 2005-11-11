@@ -130,14 +130,24 @@ class ObjectService
 	 * @param $fullTextSearch if true, the text is searched in all text fields and every coincidence is returned. 
 	 *				If false, it is only looked up in the title.
 	 */
-	function findByText($classId, $text, $fullTextSearch)
+	function findByText($classId, $text, $fullTextSearch, $folderId = -1)
 	{
 		$objectQuery = new Query("Object");
 		$criteriaGroup = new CriteriaGroup(CriteriaGroup::getAndSeparator());
+		
 		// Lookup by class...
 		$criteria = new Criteria($objectQuery, "classID", $classId);
 		$criteriaGroup->addCriterion($criteria);
-		
+
+		if ($folderId != -1 && $folderId != null)
+		{
+			// Lookup by folder...
+			$objectFolderQuery =& $objectQuery->queryRelationedClass("ObjectFolder");
+
+			$folderCriteria = new Criteria($objectFolderQuery, "folderID", $folderId);
+			$criteriaGroup->addCriterion($folderCriteria);
+		}
+
 		// ... and criterias sent
 		if ($fullTextSearch)
 		{			
@@ -182,7 +192,9 @@ class ObjectService
 		
 		// Execute the query and map the results
 		$objectMapper = new ObjectMapper();
-		return $objectMapper->mapAll($objectQuery->execute());
+		$rv = $objectMapper->mapAll($objectQuery->execute());
+
+		return $rv;
 	}
 	
 	/**

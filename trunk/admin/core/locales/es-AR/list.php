@@ -33,4 +33,7 @@ $text["yes"] = "si";
 $text["no"] = "no";
 
 $text["deleteconfirmation"] = "¿Esta seguro que desea eliminar los registos seleccionados?";
+
+$text["inFolder"] = "En carpeta";
+$text["(all)"] = "(Todas)";
 ?>

@@ -8,6 +8,8 @@
 require_once "icfHorizontal.php";
 require_once "controller.php";
 require_once "mappers/baseClassMapper.php";
+require_once "mappers/folderClassMapper.php";
+require_once "mappers/folderMapper.php";
 require_once "service/objectService.php";
 require_once "service/objectServiceFactory.php";
 
@@ -16,6 +18,7 @@ require_once "service/objectServiceFactory.php";
  *
  * Parameters:
  * "classId": id of the class whose objects are to be listed
+ * "folderId": id of the folder whose objects are to be listed
  * "objectId": id of the object, if applies
  * "string": string to be searched, if applies
  * "search": type of search ("simple" or "fulltext"), if applies.
@@ -45,12 +48,26 @@ class ListController extends Controller
 		$this->collectControlerData();
 		
 		$baseClassMapper = new BaseClassMapper();
+		$folderMapper = new FolderMapper();
+		$folderClassMapper = new FolderClassMapper();
 		
 		// Gets all classes for the class combo
 		$classes = $baseClassMapper->getAll();
 		$this->controllerData["classes"] =& $classes;
 		
-		// Set a nul object array for the list of objects
+		// Gets all folders for selected class for the folder combo
+		$selClass = $this->getClass();
+		$foldersClasses = $folderClassMapper->findByClassId($selClass->getId());
+
+		$folders = array();
+		foreach ($foldersClasses as $folderClass)
+		{
+			array_push($folders, $folderClass->getFolder()); 
+		}
+
+		$this->controllerData["folders"] =& $folders;
+
+		// Set a null object array for the list of objects
 		$this->controllerData["objects"] = array();
 				
 		// Add items to toolbar
@@ -64,6 +81,7 @@ class ListController extends Controller
 	function& newControllerData()
 	{
 		$controllerData["classIdSelect"] = "";
+		$controllerData["folderIdSelect"] = "";
 		$controllerData["titleText"] = "";
 		$controllerData["searchTypeSelect"] = "";
 		
@@ -71,6 +89,7 @@ class ListController extends Controller
 		$controllerData["objectId"] = "";
 		
 		$controllerData["classes"] = array();
+		$controllerData["folders"] = array();
 		
 		return $controllerData;
 	}
@@ -90,6 +109,22 @@ class ListController extends Controller
 		return $class;
 	}
 	
+
+	/**
+	 * Gets the folder sent in controllerData
+	 * @return Folder - folder object
+	 */
+	function getFolder()
+	{
+		$controllerData =& $this->getControllerData();
+		$folderId = $controllerData["folderIdSelect"];
+		
+		$folderMapper = new FolderMapper();
+		$folder = $folderMapper->get($folderId);
+		
+		return $folder;
+	}
+
 	/**
 	 * Action that search the objects
 	 * @param $classId id of the class whose objects are being searched
@@ -98,6 +133,7 @@ class ListController extends Controller
 	{
 		$controllerData =& $this->getControllerData();		
 		$class = $this->getClass();
+		$folder = $this->getFolder();
 		
 		// Business rules for search string
 		$title = trim($controllerData["titleText"]);		
@@ -110,7 +146,7 @@ class ListController extends Controller
 		if ($controllerData["searchTypeSelect"] == "fulltext") $fulltextSearch = true;
 		
 		$objectService = ObjectServiceFactory::newInstance($class);
-		$objectArray = $objectService->findByText($controllerData["classIdSelect"], $title, $fulltextSearch);
+		$objectArray = $objectService->findByText($controllerData["classIdSelect"], $title, $fulltextSearch, $controllerData["folderIdSelect"]);
 		
 		// Set result
 		$this->controllerData["objects"] = $objectArray;
