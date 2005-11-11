@@ -130,25 +130,57 @@ class ObjectMapper extends Mapper
 
 		if ($sortByTitle)
 		{
-			uasort($rv, "Title_Sort");
+			$ln = count($rv);
+			$titles = array();
+
+			for ($i = 0; $i < $ln; $i++)
+			{
+				$titles[$i] = $rv[$i]->getTitle();
+			}
+			
+			$rv = $this->quicksortObjectByTitle($rv, $titles);
+		
 		}
 		
 		return $rv;
 	}
 
-	function Title_Sort($val_1, $val_2)
-	{
-	  // initialize the return value to zero
-	  $retVal = 0;
 
-	  // get the title value 
-	  $firstVal = $val_1->getTitle();
-	  $secondVal = $val_2->getTitle();
+	function& quicksortObjectByTitle($seq, $titles) {
 
-	  $retVal = strnatcasecmp ($firstVal, $secondVal);
+		if(count($seq)>1) 
+		{
+			$k = $seq[0];
+			$kt = $titles[0];
 
-		echo $firstVal  . " , " . $secondVal . $retVal;
-	  return $retVal;
+			$x = array();
+			$y = array();
+		
+			$xt = array();
+			$yt = array();
+
+			for($i=1; $i<count($seq); $i++) 
+			{
+				if($titles[$i] <= $kt) 
+				{
+					$x[] = $seq[$i];
+					$xt[] = $titles[$i];
+				} 
+				else 
+				{
+					$y[] = $seq[$i];
+					$yt[] = $titles[$i];
+				}
+			}
+
+			$x = $this->quicksortObjectByTitle($x, $xt);
+			$y = $this->quicksortObjectByTitle($y, $yt);
+			return array_merge($x, array($k), $y);
+		} 
+		else 
+		{
+			return $seq;
+		}
 	}
 
 	/**
@@ -228,5 +260,6 @@ class ObjectMapper extends Mapper
 		return $object;
 	}
 }
+
 
 ?>
