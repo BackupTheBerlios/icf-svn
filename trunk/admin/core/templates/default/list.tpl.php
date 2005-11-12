@@ -20,7 +20,22 @@ function handleFolders(){
 
 	if(icfHTTP.readyState == 4){ //Finished loading the response
 		var response = icfHTTP.responseText;
-		document.getElementById('classIdSelect').innerHTML = response;
+
+		var cb = document.getElementById('folderIdSelect');
+		var ln = cb.options.length;
+
+		for (var i = 0; i < ln ; i++)
+		{
+			cb.options[i] = null;
+		}
+
+		eval("var data = " + response);
+
+		for (var i = 0; i < data.length ; i++)
+		{
+			cb.options[i] = new Option(data[i],i);
+		}
+
 	}
 }
 </script>
