@@ -26,6 +26,9 @@
 		<!-- import the calendar language module -->
 		<script type="text/javascript" src="<?php echo $this->templatePath?>/scripts/calendar/lang/calendar-es-AR.js"></script>
 		
+		<!-- import the ajax helper -->
+		<script type="text/javascript" src="<?php echo $this->templatePath?>/scripts/ajax.js"></script>
+
 		<!-- tinyMCE -->
 		<script type="text/javascript" src="<?php echo $this->templatePath?>/scripts/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 

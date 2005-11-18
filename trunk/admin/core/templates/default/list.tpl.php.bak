@@ -8,11 +8,9 @@
 /* Function called to get the folders list */
 function getFolders(){
 
-	var selID = document.form.classIdSelect.options[document.form.classIdSelect.selectedIndex].value;
+	var selID = getComboSelectedValue(document.form.classIdSelect);
 
-	icfHTTP.open('get', 'irequest.php?action=get_folders&id=' + selID);
-	icfHTTP.onreadystatechange = handleFolders; 
-	icfHTTP.send(null);
+	ajaxExec('<?php echo $this->templatePath?>/irequest.php?action=get_folders&id=' + selID, handleFolders);
 }
 
 /* Function called to handle the list that was returned from the internal_request.php file.. */
@@ -20,7 +18,19 @@ function handleFolders(){
 
 	if(icfHTTP.readyState == 4){ //Finished loading the response
 		var response = icfHTTP.responseText;
-		document.getElementById('classIdSelect').innerHTML = response;
+		var cb = document.getElementById('folderIdSelect');
+
+		comboClear(cb);
+
+		eval("var data = " + response);
+
+		for (var i = 0; i < data.length ; i++)
+		{
+			var pos = data[i].indexOf("|");
+
+			cb.options[i] = new Option(data[i].substr(pos+1),data[i].substr(0, pos-1));
+		}
+
 	}
 }
 </script>

@@ -1,6 +1,7 @@
 <?php
 
 require_once "mappers/folderClassMapper.php";
+require_once "mappers/objectMapper.php";
 require_once "JSON.php";
 
 // Bust cache in the head
@@ -16,22 +17,29 @@ if($_GET['action'] == 'get_folders')
 {
 	$id = $_GET['id'];
 
-	$folderClassMapper = new FolderClassMapper();
-
-	// Gets all folders for selected class for the folder combo
-	$foldersClasses = $folderClassMapper->findByClassId($id);
-
-	$folders = array();
-	foreach ($foldersClasses as $folderClass)
+	if (is_numeric($id))
 	{
-		$folder = $folderClass->getFolder();
-		$text = $folder->getId() . "|" . $folder->getTitle();
-		array_push($folders, $text); 
-	}
-	
-	$json = new JSON();
+		$folderClassMapper = new FolderClassMapper();
+		$objectMapper = new ObjectMapper();
 
-    echo $json->encode($folders);
+		// Gets all folders for selected class for the folder combo
+		$foldersClasses = $folderClassMapper->findByClassId($id);
+
+		$folders = array();
+		$titles = array();
+		foreach ($foldersClasses as $folderClass)
+		{
+			$folder = $folderClass->getFolder();
+			$text = $folder->getId() . "|" . $folder->getPathway();
+			array_push($folders, $text); 
+			array_push($titles, $folder->getPathway()); 
+		}
+		
+		$folders = $objectMapper->quicksortObjectByTitle($folders, $titles);
+		$json = new JSON();
+
+		echo $json->encode($folders);
+	}
 }
 
 ?>
