@@ -24,7 +24,8 @@ function handleFolders(){
 
 		eval("var data = " + response);
 
-		for (var i = 0; i < data.length ; i++)
+		cb.options[0] = new Option('<?php echo $this->text["(all)"]?>',-1);
+		for (var i = 1; i <= data.length ; i++)
 		{
 			var pos = data[i].indexOf("|");
 
