@@ -9,6 +9,7 @@ require_once "icfHorizontal.php";
 require_once "controller.php";
 require_once "mappers/baseClassMapper.php";
 require_once "mappers/languageMapper.php";
+require_once "mappers/objectMapper.php";
 require_once "service/objectService.php";
 require_once "frontAttributes/frontAttributeFactory.php";
 require_once "classes/controllerMessage.php";
@@ -272,12 +273,35 @@ class AddController extends Controller
 			return;
 		}
 
-		// Save !!
-		$objectService = ObjectServiceFactory::newInstance($object->getClass());
-		$objectService->save($object);
-		
-		// Everything went all right, display view
-		$this->redirectToReferer();
+		$saveIt = true;
+
+		if ( $object->getIsPublished() )
+		{
+			//check publishing permissions
+			$canPublish = $object->canDoAction(null, Action::PUBLISH_OBJECTS_ACTION()); 
+
+			if (! $canPublish)
+				$saveIt = false;
+		}
+			
+		if ($saveIt)
+		{
+			// Save !!
+			$objectService = ObjectServiceFactory::newInstance($object->getClass());
+			$objectService->save($object);
+	
+			// Everything went all right, display view
+			$this->redirectToReferer();
+		}
+		else
+		{
+			//send error message
+			$controllerMessage = new ControllerMessage($this->text["notenoughpermissionstopublish"], ControllerMessage::getErrorType());
+			array_push($this->controllerMessageArray, $controllerMessage);
+			$this->showView(true);
+			return;
+		}
+	
 	}
 	
 	/**
@@ -316,13 +340,40 @@ class AddController extends Controller
 			return;
 		}
 		
-		// Update !!
-		$objectService = ObjectServiceFactory::newInstance($object->getClass());
-		$objectService->update($object);
-		
-		
-		// Everything went all right, display view
-		$this->redirectToReferer();
+		$saveIt = true;
+
+		$om = new ObjectMapper();
+		$prevObject = $om->get($object->getId());
+
+		if ( $object->getIsPublished() != $prevObject->getIsPublished())
+		{
+			//check publishing permissions
+			$canPublish = $object->canDoAction(null, Action::PUBLISH_OBJECTS_ACTION()); 
+
+			if (! $canPublish)
+				$saveIt = false;
+		}
+			
+		if ($saveIt)
+		{
+			// Update !!
+			$objectService = ObjectServiceFactory::newInstance($object->getClass());
+			$objectService->update($object);
+			
+			
+			// Everything went all right, display view
+			$this->redirectToReferer();
+		}
+		else
+		{
+			//send error message
+			$controllerMessage = new ControllerMessage($this->text["notenoughpermissionstopublish"], ControllerMessage::getErrorType());
+			array_push($this->controllerMessageArray, $controllerMessage);
+			$this->showView(true);
+			return;
+		}
+
+
 	}
 	
 	/**
@@ -473,6 +524,7 @@ class AddController extends Controller
 			
 			$this->tpl->assign("updatedOn", $updatedOn);
 			$this->tpl->assign("updatedBy", $updatedBy);
+
 		}		
 		
 		$this->displayAdd($pageTitle, $frontLanguageArray, $allowedFolderArray);

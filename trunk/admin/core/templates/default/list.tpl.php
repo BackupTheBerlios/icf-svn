@@ -13,7 +13,7 @@ function getFolders(){
 	ajaxExec('<?php echo $this->templatePath?>/irequest.php?action=get_folders&id=' + selID, handleFolders);
 }
 
-/* Function called to handle the list that was returned from the internal_request.php file.. */
+/* Function called to handle the list that was returned from the irequest.php file.. */
 function handleFolders(){
 
 	if(icfHTTP.readyState == 4){ //Finished loading the response
@@ -177,29 +177,71 @@ function handleFolders(){
 	/**
 	 * Executed when the user pushes the publish button in the toolbar
 	 */
+	
+	var toPublishID;
+
 	function publishButton_onClick()
 	{	
-		var id = getSelectedObjectId();
-		if (id == null) return;
-		
-		window.document.getElementById("method").value = "publish";
-		window.document.getElementById("objectId").value = id;
-		window.document.getElementById("form").submit();
+		toPublishID = getSelectedObjectId();
+		if (toPublishID == null) return;
+
+		ajaxExec('<?php echo $this->templatePath?>/irequest.php?action=hasPublishingPermissions&id=' + toPublishID, handlePublish);
 	}
 	
+	function handlePublish()
+	{
+
+		if(icfHTTP.readyState == 4) //Finished loading the response
+		{ 
+			var response = icfHTTP.responseText;
+			eval("var data = " + response);
+
+			if (data == true)
+			{
+				window.document.getElementById("method").value = "publish";
+				window.document.getElementById("objectId").value = toPublishID;
+				window.document.getElementById("form").submit();
+			}
+			else
+				alert("<?php echo $this->text["donthavepublishingpermissions"]?>");
+
+		}
+	}
+
 	/**
 	 * Executed when the user pushes the unpublish button in the toolbar
 	 */
+ 	var toUnpublishID;
 	function unpublishButton_onClick()
 	{
-		var id  = getSelectedObjectId();
-		if (id == null) return;
-		
-		window.document.getElementById("method").value = "unpublish";
-		window.document.getElementById("objectId").value = id;
-		window.document.getElementById("form").submit();
+		toUnpublishID = getSelectedObjectId();
+		if (toUnpublishID == null) return;
+
+		ajaxExec('<?php echo $this->templatePath?>/irequest.php?action=hasPublishingPermissions&id=' + toUnpublishID, handleUnpublish);
 	}
-	
+
+
+	function handleUnpublish()
+	{
+
+		if(icfHTTP.readyState == 4) //Finished loading the response
+		{ 
+			var response = icfHTTP.responseText;
+			eval("var data = " + response);
+
+			if (data == true)
+			{
+				window.document.getElementById("method").value = "unpublish";
+				window.document.getElementById("objectId").value = toUnpublishID;
+				window.document.getElementById("form").submit();
+			}
+			else
+				alert("<?php echo $this->text["donthavepublishingpermissions"]?>");
+
+		}
+	}
+
+
 	/**
 	 * Executed when the user pushes the edit button in the toolbar
 	 */

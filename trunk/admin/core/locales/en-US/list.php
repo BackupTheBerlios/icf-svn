@@ -36,5 +36,6 @@ $text["deleteconfirmation"] = "Are you sure you want to delete the selected reco
 
 $text["inFolder"] = "In folder";
 $text["(all)"] = "(All)";
+$text["donthavepublishingpermissions"] = "Yo can´t do this action because you haven´t permissions to do it";
 
 ?>

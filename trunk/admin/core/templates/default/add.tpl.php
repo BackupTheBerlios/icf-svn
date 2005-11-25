@@ -284,7 +284,8 @@
 							<table width="100%" class="adminform">
 								<tr>
 									<td><?php echo $this->text["publish"]?></td>
-									<td><input type="checkbox" name="publishCheckbox" id="publishCheckbox" <?php if ($this->publishCheckbox) echo "checked=\"checked\""?> value="-1"></td>
+									<td><input type="checkbox" name="publishCheckbox" id="publishCheckbox" <?php if ($this->publishCheckbox) echo "checked=\"checked\""?> 
+									value="-1"></td>
 								</tr>
 								<tr>
 									<td><?php echo $this->text["from"]?></td>

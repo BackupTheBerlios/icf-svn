@@ -35,5 +35,7 @@ $text["no"] = "no";
 $text["deleteconfirmation"] = "¿Esta seguro que desea eliminar los registos seleccionados?";
 
 $text["inFolder"] = "En carpeta";
-$text["(all)"] = "(Todas)";
+$text["(all)"] = "(Todo)";
+$text["donthavepublishingpermissions"] = "No puede realizar esta acción ya que no tiene permisos";
+
 ?>

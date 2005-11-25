@@ -31,7 +31,7 @@
 
 	<td>
 		<a class="toolbar" href="<?php echo $item->url;?>" onclick="<?php echo $item->getOnclick()?>"> 
-			<img src="<?php echo $templatePath?><?php echo $item->image;?>" alt="<?php echo $item->title;?>" name="<?php echo $item->name;?>" align="middle" border="0" /><?php echo $item->title;?>
+			<img src="<?php echo $templatePath?><?php echo $item->image2;?>" alt="<?php echo $item->title;?>" name="<?php echo $item->name;?>" align="middle" border="0" /><?php echo $item->title;?>
 		</a>&nbsp;
 	</td>
 

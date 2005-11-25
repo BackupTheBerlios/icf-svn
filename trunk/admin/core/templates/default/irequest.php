@@ -1,7 +1,9 @@
 <?php
 
+require_once "icfHorizontal.php";
 require_once "mappers/folderClassMapper.php";
 require_once "mappers/objectMapper.php";
+require_once "classes/object.php";
 require_once "JSON.php";
 
 // Bust cache in the head
@@ -13,7 +15,7 @@ header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
 header ("Pragma: no-cache");                          // HTTP/1.0
 
 
-if($_GET['action'] == 'get_folders')
+if($_GET['action'] == 'get_folders') // Gets all folders for this class ID
 {
 	$id = $_GET['id'];
 
@@ -39,6 +41,21 @@ if($_GET['action'] == 'get_folders')
 		$json = new JSON();
 
 		echo $json->encode($folders);
+	}
+}
+
+if($_GET['action'] == 'hasPublishingPermissions') //returns true if current user has permission to publish/unpublish for this object ID
+{
+	$id = $_GET['id'];
+
+	if (is_numeric($id))
+	{
+		$objectMapper = new ObjectMapper();
+		$object = $objectMapper->get($id);
+		$rv = $object->canDoAction(null, Action::PUBLISH_OBJECTS_ACTION());
+
+		$json = new JSON();
+		echo $json->encode($rv);
 	}
 }
 

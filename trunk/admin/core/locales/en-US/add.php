@@ -35,4 +35,7 @@ $text["mustnotselectparents"] = "You can't select a folder that has children";
 
 $text["available"] = "Available";
 $text["selected"] = "Selected";
+$text["notenoughpermissionstopublish"] = "Yo don´t have permissions to publish content in some folders that you´ve selected.  If you uncheck 'Publish' checkbox, you will save this content";
+
+
 ?>

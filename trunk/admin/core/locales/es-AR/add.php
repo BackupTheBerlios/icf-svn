@@ -35,4 +35,6 @@ $text["mustnotselectparents"] = "No puede seleccionar carpetas que tengan hijos"
 
 $text["available"] = "Disponibles";
 $text["selected"] = "Seleccionados";
+$text["notenoughpermissionstopublish"] = "Ud. no tiene permisos para publicar contenidos en alguna de las carpetas que ha seleccionado.  Puede guardar el contenido, si desmarca el checkbox 'Publicar'";
+
 ?>
